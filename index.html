@@ -1,30 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>YooPoll - Quick Polls</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width = device-width, initial-scale = 1">
+
+        <title>YooLoL</title>
         <!--Boostrap's CSS-->
         <link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
         <!--Custom CSS-->
-        <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <link rel="stylesheet" type="text/css" href="./css/styles.css">
     </head>
     <body>
-        <div class="container" id="page-container">
-            <h1 id="app-name">
-                <span class="glyphicon glyphicon-pencil"></span> YooPoll
-            </h1>
-            <!-- NB: glyphicon halflings are generally not free, but the developer made them free in bootstrap -->
 
-            <h2 id="page-header">
-                Quickly make simple polls.
-            </h2>
-            <div class="btn-wrapper">
-                <label class="btn btn-info" for="my-file-selector">
-                    <input id="my-file-selector" type="file">
-                    Upload a picture of you
-                </label>
-                <button type="button" class="btn btn-info" id="refreshbtn">Another song please</button>
+        <div class="container" id="head-page-container">
+            <div class="page-header">
+                <span class="sigin-facebook pull-right"><a>Sigin with Facebook</a></span>
+                <h1>YooLoL</h1>
             </div>
         </div>
+
+        <!-- jumbotron-->
+        <div class="jumbotron text-center">
+            <div class="container">
+                <h1 class="logo-name">YooLoL</h1>
+                <p>Use YooLoL to check your level in OCE LoL</p>
+            </div>
+            <div class="container">
+                <input type="username" class="form-control" id="username" placeholder="Username">
+                <button type="submit" class="btn btn-info">Search OCE</button>
+            </div>
+        </div><!-- End jumpotronn-->
+
+
         <!-- 
             NB: You generally do not want to publically expose the server structure (eg. ./node_modules/...)
             will sort that in later bootcamps with task-runners and the like.
@@ -32,12 +39,12 @@
 
             Alternatively can use CDNs for bootstrap/jquery
         -->
-
         <!--jQuery Script-->
         <script src="./node_modules/jquery/dist/jquery.min.js"></script>
         <!--Bootstrap Script-->
         <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <!--Custom Script-->
         <script src="./js/basic.js"></script>
+        <!--<script src="./js/main.js"></script>-->
     </body>
 </html>
