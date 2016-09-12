@@ -1,28 +1,29 @@
 // Get jquery objects from DOM
 
 var username = $("#username");
+var pageheader = $("#page-header");
 var region = "oce";
 var searchbtn = $("#searchbtn");
-var key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
+var api_key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
+
+var summonerLevel = "";
+var summonerID = "";
+
 
 searchbtn.on("click", function() {
     username = document.getElementById("username").value;
+    username=username.toLowerCase();
     if (username == null || username == ""){
         alert("You did not enter an username");
     } else if(validateName(username)){
-        //document.getElementById("hey").innerHTML = "Hello " + username;
-        // valid username, call riot api here
-        getRiotData(username, {
-
-
-        });
+        getRiotData(username);
     } else {
         alert("Invalid username");
     }
-    console.log(username);
 });
 
-function validateName(name){;
+
+function validateName(name){
     if (/^[0-9a-zA-Z\\p{L} _\\.]+$/.test(name)) {
         return true;
     }
@@ -30,43 +31,45 @@ function validateName(name){;
 }
 
 // Manipulate the DOM
-function changeUI() {
+function initialChangeUI() {
     //Show detected mood
-    pageheader.html("Your mood is: ...");
+    pageheader.html("Checking summoner's data: ...");
 
     //Display song refresh button
-    refreshbtn.css("display", "inline");
+    //refreshbtn.css("display", "inline");
 
     //Remove offset at the top
-    pagecontainer.css("marginTop", "20px");
-};
-function changeasdfUI() {
-    document.write("Hello " + username);
+    //pagecontainer.css("marginTop", "20px");
 }
+function finalChangeUI(){
+    pageheader.html("Use YooLoL to check your level in OCE LoL");
+}
+
 function getRiotData(username){
+    initialChangeUI();
     $.ajax({
-        url: "https://"+region+".api.pvp.net/api/lol/"+region+"/v1.4/summoner/by-name/" +username+"?api_key="+key,
-        
+        url: "https://"+region+".api.pvp.net/api/lol/"+region+"/v1.4/summoner/by-name/" +username+"?api_key="+api_key,
         type: "GET",
-        data: Text,
-        processData: true
+        data: JSON
     })
-    .done(function(data){
-        if(data.length != 0){
-            var userData = data;
-            callback(userData);
+    .done(function(summonerData){
+        if(summonerData.length != 0){
+            sortData(summonerData);
         } else {
-            hey.innerHTML = "Summoner " + username + " was not found. Please check your username and region."
+            document.getElementById("user-result").innerHTML = "Summoner " + username + " username was not found. Please check your username and region."
         }
     })
     .fail(function(error){
-        hey.innerHTML = "Sorry, something went wrong. Try again later.";
+        document.getElementById("user-result").innerHTML = "Error getting Summoner's data";
         console.log(error.getAllResponseHeaders());
     });
+}
 
-    function callback(userData){
-
-    }
+function sortData(summonerData){
+    summonerLevel = summonerData[username].summonerLevel;
+    summonerID = summonerData[username].id;
+    document.getElementById("user-result").innerHTML = username + "'s level is " + summonerLevel;
+    finalChangeUI();
 }
 /**
  * {
@@ -78,5 +81,4 @@ function getRiotData(username){
     "revisionDate": 1472831014000
   }
 }
-go on msa and check
  */
