@@ -1,5 +1,5 @@
 // Get jquery objects from DOM
-
+/*
 var username = $("#username");
 var pageheader = $("#page-header");
 var region = "oce";
@@ -14,7 +14,7 @@ searchbtn.on("click", function() {
     username = document.getElementById("username").value;
     username=username.toLowerCase();
     if (username == null || username == ""){
-        alert("You did not enter an username");
+        swal("You did not enter an username");
     } else if(validateName(username)){
         getRiotData(username);
     } else {
@@ -60,7 +60,7 @@ function getRiotData(username){
         }
     })
     .fail(function(error){
-        document.getElementById("user-result").innerHTML = "Error getting Summoner's data";
+        swal("Oops...", "Error getting Summoner's data!", "error");
         console.log(error.getAllResponseHeaders());
     });
 }

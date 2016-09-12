@@ -1,2 +1,2 @@
-# YooPoll
-Polling web app
+# YooLoL
+Gets LoL data
