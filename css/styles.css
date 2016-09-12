@@ -14,6 +14,10 @@ body {
   background-color:transparent;
   color:white;
 }
+.input-group{
+  width:75%;
+  margin: 0 auto;
+}
 
 #sign-in {
     position: absolute;
