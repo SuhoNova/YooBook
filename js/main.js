@@ -46,10 +46,10 @@ var summoner = (function () {
 }());
 function summonerData(d, n) {
     _user = new summoner(d[n].id, d[n].name, d[n].profileIconId, d[n].summonerLevel, d[n].revisionDate);
-    getLeagueData(_user.id);
+    //getLeagueData(_user.id);
     console.log(_user);
-    console.log(_userLeague);
-    layoutUserData(_user, _userLeague);
+    //console.log(_userLeague);
+    layoutUserData();
 }
 var league = (function () {
     //leaguePoints:number;
@@ -122,10 +122,10 @@ function layoutUserData() {
     document.getElementById("name").innerHTML = "Summoner: " + _user.name;
     document.getElementById("userLevel").innerHTML = "Level: " + _user.summonerLevel;
     document.getElementById("icon").src = "http://ddragon.leagueoflegends.com/cdn/6.18.1/img/profileicon/" + _user.profileIconId + ".png";
-    document.getElementById("rankLeague").innerHTML = _userLeague.tier;
-    document.getElementById("rankName").innerHTML = "Level: " + _userLeague.name;
-    var rankL = _userLeague.tier.toLowerCase();
-    document.getElementById("rankIcon").src = "http://sk2.op.gg/images/medals/" + rankL + "_2.png";
+    //document.getElementById("rankLeague").innerHTML = _userLeague.tier;
+    //document.getElementById("rankName").innerHTML = "Level: " + _userLeague.name;
+    //var rankL = _userLeague.tier.toLowerCase();
+    //(<HTMLInputElement>document.getElementById("rankIcon")).src = "http://sk2.op.gg/images/medals/" + rankL + "_2.png"
 }
 /**
  * Facebook login
