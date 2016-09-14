@@ -47,7 +47,7 @@ var summoner = (function () {
 function summonerData(d, n) {
     _user = new summoner(d[n].id, d[n].name, d[n].profileIconId, d[n].summonerLevel, d[n].revisionDate);
     //getLeagueData(_user.id);
-    console.log(_user);
+    //console.log(_user);
     //console.log(_userLeague);
     layoutUserData();
 }
@@ -94,7 +94,7 @@ function getUserData(name) {
         }
     })
         .fail(function (error) {
-        alert("Error getting Summoner's data!");
+        swal("Error getting Summoner's data!", "Please try again.");
         console.log(error.getAllResponseHeaders());
     });
 }
@@ -109,12 +109,11 @@ function getLeagueData(id) {
             leagueData(lData, id);
         }
         else {
-            //document.getElementById("user-result").innerHTML = "Summoner " + name + " username was not found. Please check your username and region."
-            console.log("no league data");
+            document.getElementById("user-result").innerHTML = "Summoner " + name + " rank was not found.";
         }
     })
         .fail(function (error) {
-        alert("Error getting Summoner's data!");
+        swal("Error getting Summoner's data!", "Please try again.");
         console.log(error.getAllResponseHeaders());
     });
 }
