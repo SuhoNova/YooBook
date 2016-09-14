@@ -1,79 +1,131 @@
-import * as $ from 'jquery';
+///<reference path="fbsdk.d.ts" />
+/**
+ * facebook
+ */
+var _userTokens;
 
-
-// Get jquery objects from DOM
-var api_key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
-var region = "oce";
-
-var username = "";
-var pageheader = $("#page-header")[0];
-var searchbtn = $("#searchbtn")[0];
-var userData:summoner;
-
-searchbtn.addEventListener("click", function(){
-    username = document.getElementById("username").nodeValue;
-    username=username.toLowerCase();
-    if (username == null || username == ""){
-        alert("You did not enter an username");
-    } else if(validateName(username)){
-        getRiotData(username);
+var _fb_id = "323270821354701";
+function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    if (response.status === 'connected') {
+        testAPI();
+    } else if (response.status === 'not_authorized') {
+        document.getElementById('status').innerHTML = 'Please log ' + 'into this app.';
     } else {
-        alert("Invalid username, please try again.");
+        document.getElementById('status').innerHTML = 'Please log ' + 'into Facebook.';
     }
-});
-
-function validateName(name) : Boolean {
-    if (/^[0-9a-zA-Z\\p{L} _\\.]+$/.test(name)) {
-        return true;
-    }
-    return false;
 }
 
-// Manipulate the DOM
-function initialChangeUI() {
-    //Show detected mood
-    document.getElementById("pageheader").innerHTML ="Checking summoner's data: ...";
-    //Display song refresh button
-    //refreshbtn.css("display", "inline");
-
-    //Remove offset at the top
-    //pagecontainer.css("marginTop", "20px");
-}
-function finalChangeUI(){
-    document.getElementById("pageheader").innerHTML = "Use YooLoL to check your level in OCE LoL";
-}
-
-function getRiotData(username) : void {
-    initialChangeUI();
-    $.ajax({
-        url: "https://"+region+".api.pvp.net/api/lol/"+region+"/v1.4/summoner/by-name/" +username+"?api_key="+api_key,
-        type: "GET",
-        data: JSON
-    })
-    .done(function(summonerData){
-        if(summonerData.length != 0){
-            sortData(summonerData);
-        } else {
-            document.getElementById("user-result").innerHTML = "Summoner " + username + " username was not found. Please check your username and region."
-        }
-    })
-    .fail(function(error){
-        alert("Error getting Summoner's data!");
-        console.log(error.getAllResponseHeaders());
+function checkLoginState() {
+    FB.getLoginStatus(function (response) {
+        statusChangeCallback(response);
     });
 }
 
-function sortData(summonerData){
+window.fbAsyncInit = function () {
+    FB.init({
+        appId: _fb_id,
+        cookie: true,  // enable cookies to allow the server to access 
+        // the session
+        xfbml: true,  // parse social plugins on this page
+        version: 'v2.7' // use graph api version 2.5
+    });
 
-    userData.id=summonerData[username].id;
-    userData.name=summonerData[username].name;
-    userData.profileIconId=summonerData[username].profileIconId;
-    userData.summonerLevel=summonerData[username].summonerLevel;
-    userData.revisionDate=summonerData[username].revisionDate;
+    FB.getLoginStatus(function (response) {
+        statusChangeCallback(response);
+    });
+};
 
-    document.getElementById("user-result").innerHTML = username + "'s level is " + userData.summonerLevel;
-    finalChangeUI();
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+} (document, 'script', 'facebook-jssdk'));
+
+function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', "GET", function (response) {
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML = 'Hello, ' + response.name + '!';
+    });
 }
+
+
+
+// api-key
+var _api_key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
+// username
+var _username;
+// region
+var _region = "oce";
+// searchbtn
+var searchbtn = document.getElementById('searchbtn');
+var _user;
+
+
+class summoner {
+    id: number;
+    name: string;
+    profileIconId: number;
+    summonerLevel: number;
+    revisionDate: number;
+    constructor(public _id, public _name, public _profileIconId, public _summonerLevel, public _revisionDate) {
+        this.id = _id;
+        this.name = _name;
+        this.profileIconId = _profileIconId;
+        this.summonerLevel = _summonerLevel;
+        this.revisionDate = _revisionDate;
+    }
+}
+
+searchbtn.addEventListener('click', function () {
+    _username = (<HTMLInputElement>document.getElementById('username')).value;
+    if (validateName(_username)) {
+        getUserData(_username);
+    } else {
+        document.getElementById("user-result").innerHTML = _username + " username is invalid, please enter again.";
+        alert("Invalid!");
+    }
+});
+
+function validateName(name: string) {
+    return (/^[0-9a-zA-Z\\p{L} _\\.]+$/.test(name));
+}
+
+function getUserData(name: string) {
+    $.ajax({
+        url: "https://" + _region + ".api.pvp.net/api/lol/" + _region + "/v1.4/summoner/by-name/" + name + "?api_key=" + _api_key,
+        type: "GET",
+        data: JSON
+    })
+        .done(function (summonerData) {
+            if (summonerData.length != 0) {
+                userData(summonerData, name);
+            } else {
+                document.getElementById("user-result").innerHTML = "Summoner " + name + " username was not found. Please check your username and region."
+            }
+        })
+        .fail(function (error) {
+            alert("Error getting Summoner's data!");
+            console.log(error.getAllResponseHeaders());
+        });
+}
+function userData(d: JSON, n: string) {
+    _user = new summoner(d[n].id, d[n].name, d[n].profileIconId, d[n].summonerLevel, d[n].revisionDate);
+    console.log(_user);
+    layoutUserData();
+}
+
+function layoutUserData() {
+    document.getElementById("user-result").innerHTML = "Hello, " + _user.name +"<br>Your level is " + _user.summonerLevel;
+
+}
+/**
+ * UI change
+ */
 /**
  * {
   "ajaajak": {
@@ -85,35 +137,3 @@ function sortData(summonerData){
   }
 }
  */
-function sendSummonerDataRequest(username) : void {
-    $.ajax({
-        url: "https://"+region+".api.pvp.net/api/lol/"+region+"/v1.4/summoner/by-name/" +username+"?api_key="+api_key,
-        type: "GET",
-        data: JSON
-    })
-    .done(function(summonerData){
-        if(summonerData.length != 0){
-            sortData(summonerData);
-        } else {
-            document.getElementById("user-result").innerHTML = "Summoner " + username + " username was not found. Please check your username and region."
-        }
-    })
-    .fail(function(error){
-        alert("Error getting Summoner's data!");
-        console.log(error.getAllResponseHeaders());
-    });
-}
-class summoner {
-    name: string;
-    id: number;
-    profileIconId: number;
-    summonerLevel: number;
-    revisionDate: number;
-    constructor(public sName, public sID, public sProfileIconId, public sSummonerLevel, public sRevisionDate){
-        this.name=sName;
-        this.id=sID;
-        this.profileIconId=sProfileIconId;
-        this.summonerLevel=sSummonerLevel;
-        this.revisionDate=sRevisionDate;
-    }
-}

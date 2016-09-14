@@ -1,56 +1,104 @@
-"use strict";
-
-// Get jquery objects from DOM
-var api_key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
-var region = "oce";
-var username = "";
-var pageheader = $("#page-header")[0];
-var searchbtn = $("#searchbtn")[0];
-var userData;
-searchbtn.addEventListener("click", function () {
-    username = document.getElementById("username").value;
-    username = username.toLowerCase();
-    if (username == null || username == "") {
-        alert("You did not enter an username");
+///<reference path="fbsdk.d.ts" />
+/**
+ * facebook
+ */
+var _userTokens;
+var _fb_id = "323270821354701";
+function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    if (response.status === 'connected') {
+        testAPI();
     }
-    else if (validateName(username)) {
-        getRiotData(username);
+    else if (response.status === 'not_authorized') {
+        document.getElementById('status').innerHTML = 'Please log ' + 'into this app.';
     }
     else {
-        alert("Invalid username, please try again.");
+        document.getElementById('status').innerHTML = 'Please log ' + 'into Facebook.';
+    }
+}
+function checkLoginState() {
+    FB.getLoginStatus(function (response) {
+        statusChangeCallback(response);
+    });
+}
+window.fbAsyncInit = function () {
+    FB.init({
+        appId: _fb_id,
+        cookie: true,
+        // the session
+        xfbml: true,
+        version: 'v2.7' // use graph api version 2.5
+    });
+    FB.getLoginStatus(function (response) {
+        statusChangeCallback(response);
+    });
+};
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id))
+        return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', "GET", function (response) {
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML = 'Hello, ' + response.name + '!';
+    });
+}
+// api-key
+var _api_key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
+// username
+var _username;
+// region
+var _region = "oce";
+// searchbtn
+var searchbtn = document.getElementById('searchbtn');
+var _user;
+var summoner = (function () {
+    function summoner(_id, _name, _profileIconId, _summonerLevel, _revisionDate) {
+        this._id = _id;
+        this._name = _name;
+        this._profileIconId = _profileIconId;
+        this._summonerLevel = _summonerLevel;
+        this._revisionDate = _revisionDate;
+        this.id = _id;
+        this.name = _name;
+        this.profileIconId = _profileIconId;
+        this.summonerLevel = _summonerLevel;
+        this.revisionDate = _revisionDate;
+    }
+    return summoner;
+}());
+searchbtn.addEventListener('click', function () {
+    _username = document.getElementById('username').value;
+    if (validateName(_username)) {
+        getUserData(_username);
+    }
+    else {
+        document.getElementById("user-result").innerHTML = _username + " username is invalid, please enter again.";
+        alert("Invalid!");
     }
 });
 function validateName(name) {
-    if (/^[0-9a-zA-Z\\p{L} _\\.]+$/.test(name)) {
-        return true;
-    }
-    return false;
+    return (/^[0-9a-zA-Z\\p{L} _\\.]+$/.test(name));
 }
-// Manipulate the DOM
-function initialChangeUI() {
-    //Show detected mood
-    document.getElementById("pageheader").innerHTML = "Checking summoner's data: ...";
-    //Display song refresh button
-    //refreshbtn.css("display", "inline");
-    //Remove offset at the top
-    //pagecontainer.css("marginTop", "20px");
-}
-function finalChangeUI() {
-    document.getElementById("pageheader").innerHTML = "Use YooLoL to check your level in OCE LoL";
-}
-function getRiotData(username) {
-    //initialChangeUI();
+function getUserData(name) {
     $.ajax({
-        url: "https://" + region + ".api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + username + "?api_key=" + api_key,
+        url: "https://" + _region + ".api.pvp.net/api/lol/" + _region + "/v1.4/summoner/by-name/" + name + "?api_key=" + _api_key,
         type: "GET",
         data: JSON
     })
         .done(function (summonerData) {
         if (summonerData.length != 0) {
-            sortData(summonerData);
+            userData(summonerData, name);
         }
         else {
-            document.getElementById("user-result").innerHTML = "Summoner " + username + " username was not found. Please check your username and region.";
+            document.getElementById("user-result").innerHTML = "Summoner " + name + " username was not found. Please check your username and region.";
         }
     })
         .fail(function (error) {
@@ -58,15 +106,17 @@ function getRiotData(username) {
         console.log(error.getAllResponseHeaders());
     });
 }
-function sortData(summonerData) {
-    userData.id = summonerData[username].id;
-    userData.name = summonerData[username].name;
-    userData.profileIconId = summonerData[username].profileIconId;
-    userData.summonerLevel = summonerData[username].summonerLevel;
-    userData.revisionDate = summonerData[username].revisionDate;
-    document.getElementById("user-result").innerHTML = username + "'s level is " + userData.summonerLevel;
-    finalChangeUI();
+function userData(d, n) {
+    _user = new summoner(d[n].id, d[n].name, d[n].profileIconId, d[n].summonerLevel, d[n].revisionDate);
+    console.log(_user);
+    layoutUserData();
 }
+function layoutUserData() {
+    document.getElementById("user-result").innerHTML = "Hello, " + _user.name + "<br>Your level is " + _user.summonerLevel;
+}
+/**
+ * UI change
+ */
 /**
  * {
   "ajaajak": {
@@ -77,38 +127,4 @@ function sortData(summonerData) {
     "revisionDate": 1472831014000
   }
 }
- */
-function sendSummonerDataRequest(username) {
-    $.ajax({
-        url: "https://" + region + ".api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + username + "?api_key=" + api_key,
-        type: "GET",
-        data: JSON
-    })
-        .done(function (summonerData) {
-        if (summonerData.length != 0) {
-            sortData(summonerData);
-        }
-        else {
-            document.getElementById("user-result").innerHTML = "Summoner " + username + " username was not found. Please check your username and region.";
-        }
-    })
-        .fail(function (error) {
-        alert("Error getting Summoner's data!");
-        console.log(error.getAllResponseHeaders());
-    });
-}
-var summoner = (function () {
-    function summoner(sName, sID, sProfileIconId, sSummonerLevel, sRevisionDate) {
-        this.sName = sName;
-        this.sID = sID;
-        this.sProfileIconId = sProfileIconId;
-        this.sSummonerLevel = sSummonerLevel;
-        this.sRevisionDate = sRevisionDate;
-        this.name = sName;
-        this.id = sID;
-        this.profileIconId = sProfileIconId;
-        this.summonerLevel = sSummonerLevel;
-        this.revisionDate = sRevisionDate;
-    }
-    return summoner;
-}());
+ */ 
