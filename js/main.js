@@ -93,8 +93,6 @@ function getLeagueData(id) {
         .done(function (leagueData) {
         if (leagueData.length != 0) {
             var e = "entries";
-            console.log(leagueData);
-            console.log(leagueData[id][0].entries.leaguePoints);
             _userLeague = new league(leagueData[id][0].queue, leagueData[id][0].name, leagueData[id][0].tier, +leagueData[id][0].entries[0].leaguePoints, leagueData[id][0].entries[0].division, +leagueData[id][0].entries[0].wins, leagueData[id][0].entries[0].losses);
             layoutUserData();
         }
@@ -152,7 +150,6 @@ function getChampName(id, slide) {
         else {
             console.log("Error in getting champion's name.");
         }
-        return;
     })
         .fail(function (error) {
         swal("Error getting free rotation champion's data!", "Please try again.");
