@@ -6,7 +6,6 @@ body {
     color: white;
     background-color: transparent;
 }
-
 .jumbotron{
   background-color:transparent;
   color:white;
@@ -15,76 +14,34 @@ body {
   width:75%;
   margin: 0 auto;
 }
-
-#sign-in {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-}
-#logo {
-  width: 50%;
-  margin: 0 auto;
-}
 h1#app-name{
   Font-size: 70px;
 }
 .page-header{
   background-color:transparent;
 }
-.user-result{
-  position: center;
-}
 .profileIcon{
   overflow: hidden;
   float:left;
 }
-#userInfoContainer{
-  background-color: white;
+.profile{
+  float:left;
 }
-
-h2#name{
+h2#name,h2#userLevel,h2#rankLeague,h2#rankName,h2#LP{
   color:black;
 }
-h2#userLevel{
-  color:black;
-}
-h2#rankLeague{
-  color:black;
-}
-h2#rankName{
-  color:black;
-}
-.rslides {
-  position: relative;
-  list-style: none;
-  overflow: hidden;
+#freeChamp{
   width: 100%;
-  padding: 0;
-  margin: 0;
-  }
+  border: 3px;
+  padding: 10px;
+  text-align: center;
+}
+#userProfile,#userDivision{
+  margin: auto;
 
-.rslides li {
-  -webkit-backface-visibility: hidden;
-  position: absolute;
-  display: none;
-  width: 100%;
-  left: 0;
-  top: 0;
-  }
-
-.rslides li:first-child {
-  position: relative;
-  display: block;
-  float: left;
-  }
-
-.rslides img {
-  display: block;
-  height: auto;
-  float: left;
-  width: 100%;
-  border: 0;
-  }
-  .slides{
-    transform: scale(0.5, 0.5);
-  }
+  border: 3px;
+  padding: 10px;
+}
+#champRotation{
+  text-align: center;
+}

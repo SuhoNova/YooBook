@@ -1,95 +1,79 @@
-// typescript definition for facebook 
 ///<reference path="fbsdk.d.ts" />
-// typescript definition for sweetalert
 ///<reference path="sweetalert.d.ts" />
+
 // api-key for riot api
 var _api_key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
+// api-ky for facebook
+var _fb_id = "323270821354701";
 // username of user
 var _username;
-// region default is oce for now
+// region default is oce for now, may give option for other regions later on
 var _region = "oce";
 var searchbtn = document.getElementById('searchbtn');
 // user data on LoL
 var _user;
 var _userLeague;
 var _userEntry;
-
-// when search button is pushed 
+/**
+ * When search button is pressed
+ */
 searchbtn.addEventListener('click', function () {
     _username = (<HTMLInputElement>document.getElementById('username')).value;
+    // when using LoL api, use lowercase
     _username = _username.toLowerCase();
     if (validateName(_username)) {
+        // if valid username call Riot API to get user data if available
         getUserData(_username);
+        console.log(_user);
+        //layoutUserData();
     } else {
-        document.getElementById("user-result").innerHTML = _username + " username is invalid, please enter again.";
         swal("Invalid username: " + _username, "Please try again." );
     }
 });
 // valid LoL username given in Riot API documentation
 function validateName(name: string) {
-    return (/^[0-9a-zA-Z\\p{L} _\\.]+$/.test(name));
+    return (/^[0-9a-z\\p{L} _\\.]+$/.test(name));
 }
-
-class summoner {
-    id: number;
-    name: string;
-    profileIconId: number;
-    summonerLevel: number;
-    revisionDate: number;
-    userLeague: league;
-    constructor(public _id, public _name, public _profileIconId, public _summonerLevel, public _revisionDate) {
-        this.id = _id;
-        this.name = _name;
-        this.profileIconId = _profileIconId;
-        this.summonerLevel = _summonerLevel;
-        this.revisionDate = _revisionDate;
-    }
+// ranked summoner's output layout
+function layoutUserData() {
+    document.getElementById("name").innerHTML = "Summoner: " + _user.name;
+    document.getElementById("userLevel").innerHTML = "Level: " + _user.summonerLevel;
+    (<HTMLInputElement>document.getElementById("icon")).src = "http://ddragon.leagueoflegends.com/cdn/6.18.1/img/profileicon/" + _user.profileIconId + ".png"
+    document.getElementById("rankLeague").innerHTML = _userLeague.tier + " " + _userLeague._division;
+    document.getElementById("LP").innerHTML = _userLeague._leaguePoints + "LP"
+    document.getElementById("rankName").innerHTML = _userLeague.name;
+    var rankL = _userLeague.tier.toLowerCase();
+    (<HTMLInputElement>document.getElementById("rankIcon")).src = "//sk2.op.gg/images/medals/" + rankL + "_2.png"
 }
-function summonerData(d: JSON, n: string) {
-    _user = new summoner(d[n].id, d[n].name, d[n].profileIconId, d[n].summonerLevel, d[n].revisionDate);
-    //getLeagueData(_user.id);
-    //console.log(_user);
-    //console.log(_userLeague);
-    layoutUserData();
+// Unranked summoner's output layout
+function unrankedOutput(){
+    document.getElementById("name").innerHTML = "Summoner: " + _user.name;
+    document.getElementById("userLevel").innerHTML = "Level: " + _user.summonerLevel;
+    (<HTMLInputElement>document.getElementById("icon")).src = "http://ddragon.leagueoflegends.com/cdn/6.18.1/img/profileicon/" + _user.profileIconId + ".png"
+    document.getElementById("rankLeague").innerHTML = "Unranked";
+    (<HTMLInputElement>document.getElementById("rankIcon")).src = "//sk2.op.gg/images/medals/default.png"
+    document.getElementById("LP").innerHTML = "";
+    document.getElementById("rankName").innerHTML = "";
 }
-class league {
-    queue: string;
-    name: string;
-    tier:  string;
-    entry: any;
-    //leaguePoints:number;
-    //division: string;
-    //losses: number;
-    //wins: number;
-    constructor(public  _queue, public _name, public _tier, public _entries){
-        this.queue = _queue;
-        this.name = _name;
-        this.tier = _tier;
-        this.entry = _entries;
-        //console.log(_entries);
-        //this.leaguePoints=_entries["entries"][0].leaguePoints;
-        //this.division=_entries["entries"][0].division;
-        //this.losses=_entries["entries"][0].losses;
-        //this.wins=_entries["entries"][0].wins;
-    }
-}
-function leagueData(d: JSON,id:number){
-    _userLeague = new league(d[id][0].queue,d[id][0].name,d[id][0].tier,d[id][0].entry);
-    console.log(_userLeague);
-}
-
-
-// call Riot API using ajax to get user's summoner data
+/**
+ * Using ajax to call riot's api to get user data on LoL
+ */
 function getUserData(name: string) {
     $.ajax({
-        url: "https://" + _region + ".api.pvp.net/api/lol/" + _region + "/v1.4/summoner/by-name/" + name + "?api_key=" + _api_key,
+        url: "https://"+_region +".api.pvp.net/api/lol/"+_region+"/v1.4/summoner/by-name/"+name+"?api_key="+_api_key,
         type: "GET",
         data: JSON
     })
         .done(function (data) {
             if (data.length != 0) {
                 console.log(data);
-                summonerData(data, name);
+                // store user data
+                _user = new summoner(data[name].id, data[name].name, data[name].profileIconId, data[name].summonerLevel, data[name].revisionDate);
+                if(_user._summonerLevel == 30){
+                    getLeagueData(_user._id);
+                } else {
+                    unrankedOutput();
+                }
             } else {
                 document.getElementById("user-result").innerHTML = "Summoner " + name + " username was not found. Please check your username and region."
             }
@@ -105,9 +89,15 @@ function getLeagueData(id: number) {
         type: "GET",
         data: JSON
     })
-        .done(function (lData) {
-            if (lData.length != 0) {
-                leagueData(lData,id);
+        .done(function (leagueData) {
+            if (leagueData.length != 0) {
+                var e = "entries";
+                console.log(leagueData);
+                console.log(leagueData[id][0].entries.leaguePoints);
+                _userLeague = new league(leagueData[id][0].queue,leagueData[id][0].name,leagueData[id][0].tier,
+                + leagueData[id][0].entries[0].leaguePoints,leagueData[id][0].entries[0].division,
+                + leagueData[id][0].entries[0].wins,leagueData[id][0].entries[0].losses);
+                layoutUserData();
             } else {
                 document.getElementById("user-result").innerHTML = "Summoner " + name + " rank was not found."
             }
@@ -117,20 +107,109 @@ function getLeagueData(id: number) {
             console.log(error.getAllResponseHeaders());
         });
 }
-
-function layoutUserData() {
-    document.getElementById("name").innerHTML = "Summoner: " + _user.name;
-    document.getElementById("userLevel").innerHTML = "Level: " + _user.summonerLevel;
-    (<HTMLInputElement>document.getElementById("icon")).src = "http://ddragon.leagueoflegends.com/cdn/6.18.1/img/profileicon/" + _user.profileIconId + ".png"
-    //document.getElementById("rankLeague").innerHTML = _userLeague.tier;
-    //document.getElementById("rankName").innerHTML = "Level: " + _userLeague.name;
-    //var rankL = _userLeague.tier.toLowerCase();
-    //(<HTMLInputElement>document.getElementById("rankIcon")).src = "http://sk2.op.gg/images/medals/" + rankL + "_2.png"
+/**
+ * Free champion rotation
+ */
+function changeSlides(d:JSON){
+    var c = "champions";
+    var n = "name";
+    for (var i = 0; i < 10; i++){
+        getChampName(d[c][i].id, "slide"+i);
+    }
 }
+/**
+ * Ajax to get list of free champions this week, the id of champions are in numbers so use getChampName to get the actual name from static riot API
+ */
+function getFreeChamp(){
+    $.ajax({
+        url: "https://" + _region + ".api.pvp.net/api/lol/" + _region + "/v1.2/champion?freeToPlay=true&api_key=" + _api_key,
+        type: "GET",
+        data: JSON
+    })
+        .done(function (freeData) {
+            if (freeData.length != 0) {
+                changeSlides(freeData);
+            } else {
+                console.log("Error in getting free rotation champions");
+            }
+        })
+        .fail(function (error) {
+            swal("Error getting free rotation champion's data!", "Please try again.");
+            console.log(error.getAllResponseHeaders());
+        });
+}
+function getChampName(id:number, slide:string){
+    $.ajax({
+        url: "https://global.api.pvp.net/api/lol/static-data/"+_region+"/v1.2/champion/"+id+"?api_key="+ _api_key,
+        type: "GET",
+        data: JSON
+    })
+        .done(function (champName) {
+            if (champName.length != 0) {
+                (<HTMLInputElement>document.getElementById(slide)).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+champName.name+"_0.jpg";
+            } else {
+                console.log("Error in getting champion's name.");
+            }
+            return;
+        })
+        .fail(function (error) {
+            swal("Error getting free rotation champion's data!", "Please try again.");
+            console.log(error.getAllResponseHeaders());
+        });
+}
+/**
+ * Format of how user LoL data is stored
+ */
+class summoner {
+    id: number;
+    name: string;
+    profileIconId: number;
+    summonerLevel: number;
+    revisionDate: number;
+    userLeague: league;
+    constructor(public _id, public _name, public _profileIconId, public _summonerLevel, public _revisionDate) {
+        this.id = _id;
+        this.name = _name;
+        this.profileIconId = _profileIconId;
+        this.summonerLevel = _summonerLevel;
+        this.revisionDate = _revisionDate;
+    }
+}
+class league {
+    queue: string;
+    name: string;
+    tier:  string;
+    entry: any;
+    leaguePoints:number;
+    division: string;
+    losses: number;
+    wins: number;
+    constructor(public  _queue, public _name, public _tier, public _leaguePoints, public _division, public _losses, public _wins){
+        this.queue = _queue;
+        this.name = _name;
+        this.tier = _tier;
+        this.leaguePoints=_leaguePoints;
+        this.division=_division;
+        this.losses=_losses;
+        this.wins=_wins;
+    }
+}
+
+/**
+ * Unslider
+ */
+jQuery(document).ready(function($) {
+    getFreeChamp();
+	$('.banner').unslider({
+        arrows:true,
+        animateHeight:true,
+        nav:true
+    });
+});
+
 /**
  * Facebook login 
  */
-var _fb_id = "323270821354701";
 function statusChangeCallback(response) {
     console.log('statusChangeCallback');
     console.log(response);
@@ -177,43 +256,4 @@ function testAPI() {
         console.log('Successful login for: ' + response.name);
         document.getElementById('status').innerHTML = 'Hello, ' + response.name + '!';
     });
-}
-
-
-/**
- * responsive slides get free rotation champs
- */
-function changeSlides(d:JSON){
-    console.log(d[champions][0].id);
-    (<HTMLInputElement>document.getElementById("slide1")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide2")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide3")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_00.jpg";
-    (<HTMLInputElement>document.getElementById("slide4")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide5")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide6")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide7")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide8")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide9")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    (<HTMLInputElement>document.getElementById("slide10")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
-    var slide = document.getElementById('rslides');
-    slide.responsiveSlides();
-}
-function getFreeChamp(){
-    $.ajax({
-        //https://oce.api.pvp.net/api/lol/oce/v1.2/champion?freeToPlay=true&api_key=RGAPI-72059D01-A819-4032-965D-656FFF263D28
-        url: "https://" + _region + ".api.pvp.net/api/lol/" + _region + "/v1.2/champion?freeToPlay=true&api_key=" + _api_key,
-        type: "GET",
-        data: JSON
-    })
-        .done(function (freeData) {
-            if (freeData.length != 0) {
-                changeSlides(freeData);
-            } else {
-                //document.getElementById("user-result").innerHTML = "Summoner " + name + " rank was not found."
-            }
-        })
-        .fail(function (error) {
-            swal("Error getting free rotation champion's data!", "Please try again.");
-            console.log(error.getAllResponseHeaders());
-        });
 }

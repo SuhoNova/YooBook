@@ -6,15 +6,14 @@
     <meta name="viewport" content="width = device-width, initial-scale = 1">
 
     <title>YooLoL</title>
-
     <!--Boostrap's CSS-->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!--Custom CSS-->
     <link rel="stylesheet" type="text/css" href="./css/styles.css">
     <!--sweetalert CSS-->
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="responsiveslides.min.js"></script>
+    <!--unslider CSS-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/unslider/2.0.3/css/unslider.css">
 </head>
 
 <body>
@@ -22,27 +21,27 @@
         <div class="page-header">
             <fb:login-button id="fbLogIn" class="pull-right" autologoutlink="true" onlogin="checkLoginState();">
             </fb:login-button>
-            <div class="sigin-facebook pull-right" id="status">
+            <div class="in-facebook pull-right" id="status">
             </div>
             <h1>YooLoL</h1>
         </div>
     </div>
 
-    <!-- jumbotron-->
+    <!--WebApp header-->
     <div class="jumbotron text-center">
         <div class="container" id="page-container">
             <h1 id="app-name">YooLoL</h1>
             <h2 id="page-header">Use YooLoL to check your level in OCE LoL</h2>
         </div>
         <div class="input-group">
-            <input type="text" class="form-control" id="username" placeholder="Username e.g. suhonova" />
+            <input type="text" class="form-control" id="username" placeholder="Username e.g. ajaajak(test for ranked), suhonova(test for unranked)" />
             <span class="input-group-btn">
                     <button type="button" class="btn btn-info" id="searchbtn">Search OCE</button>
                 </span>
         </div>
     </div>
-    <!-- End jumpotronn-->
-    <div id="jumbotron text-center">
+    <!--Output space-->
+    <div id="userProfile">
         <div class="profileIcon">
             <img src ="" class="profileImage" id="icon">
         </div>
@@ -52,21 +51,25 @@
                 <h2 id="userLevel"></h2>
             </div>
         </div>
+    </div>
+    <div id="userDivision">
         <div class="profileIcon">
             <img src ="" class="profileImage" id="rankIcon">
         </div>
         <div class="profile">
             <div class="userInfo">
                 <h2 id="rankLeague"></h2>
+                <h2 id="LP"></h2>
                 <h2 id="rankName"></h2>
             </div>
         </div>
     </div>
-
-    <div class="slides" id="text-center" onload="getFreeChamp();">
-        <ul class="rslides">
-            <li><img id="slide1" src="http://ddragon.leagueoflegends.com/cdn/img/champion/loading/Teemo_0.jpg" alt=""></li>
-            <li><img id="slide2" src="http://ddragon.leagueoflegends.com/cdn/img/champion/loading/Jayce_1.jpg" alt=""></li>
+    <!-- slider showing free champions this week -->
+    <div class="banner" id="freeChamp">
+        <h2 id="champRotation">Free Champions this week</h2>
+        <ul>
+            <li><img id="slide1" src="" alt=""></li>
+            <li><img id="slide2" src="" alt=""></li>
             <li><img id="slide3" src="" alt=""></li>
             <li><img id="slide4" src="" alt=""></li>
             <li><img id="slide5" src="" alt=""></li>
@@ -78,18 +81,17 @@
         </ul>
     </div>
 
-    <!-- 
-            FANCY INPUT, sticky, responsiveSlides
-
-        -->
     <!--jQuery Script-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!--Bootstrap Script-->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!--Custom Script-->
     <script src="./js/main.js"></script>
-    <!--Sweetalert Script-->
+    <!--Sweetalert jquery plugin Script-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <!--unslider jquery plugin script -->
+    <script src="https://cdn.jsdelivr.net/jquery.unslider/1.0.0/unslider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.unslider/1.0.0/unslider.js"></script>
 </body>
 
 </html>
