@@ -178,3 +178,42 @@ function testAPI() {
         document.getElementById('status').innerHTML = 'Hello, ' + response.name + '!';
     });
 }
+
+
+/**
+ * responsive slides get free rotation champs
+ */
+function changeSlides(d:JSON){
+    console.log(d[champions][0].id);
+    (<HTMLInputElement>document.getElementById("slide1")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide2")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide3")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_00.jpg";
+    (<HTMLInputElement>document.getElementById("slide4")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide5")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide6")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide7")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide8")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide9")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    (<HTMLInputElement>document.getElementById("slide10")).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+"Aatrox_0.jpg";
+    var slide = document.getElementById('rslides');
+    slide.responsiveSlides();
+}
+function getFreeChamp(){
+    $.ajax({
+        //https://oce.api.pvp.net/api/lol/oce/v1.2/champion?freeToPlay=true&api_key=RGAPI-72059D01-A819-4032-965D-656FFF263D28
+        url: "https://" + _region + ".api.pvp.net/api/lol/" + _region + "/v1.2/champion?freeToPlay=true&api_key=" + _api_key,
+        type: "GET",
+        data: JSON
+    })
+        .done(function (freeData) {
+            if (freeData.length != 0) {
+                changeSlides(freeData);
+            } else {
+                //document.getElementById("user-result").innerHTML = "Summoner " + name + " rank was not found."
+            }
+        })
+        .fail(function (error) {
+            swal("Error getting free rotation champion's data!", "Please try again.");
+            console.log(error.getAllResponseHeaders());
+        });
+}
