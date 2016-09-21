@@ -45,3 +45,6 @@ h2#name,h2#userLevel,h2#rankLeague,h2#rankName,h2#LP{
 #champRotation{
   text-align: center;
 }
+img[src='']{
+    display: none;
+}

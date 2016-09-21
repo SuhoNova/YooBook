@@ -138,13 +138,18 @@ function getFreeChamp(){
 }
 function getChampName(id:number, slide:string){
     $.ajax({
-        url: "https://global.api.pvp.net/api/lol/static-data/"+_region+"/v1.2/champion/"+id+"?api_key="+ _api_key,
+        url: "https://global.api.pvp.net/api/lol/static-data/"+_region+"/v1.2/champion/"+id+"?champData=image&api_key="+ _api_key,
         type: "GET",
         data: JSON
     })
         .done(function (champName) {
+            var idForImage="#"+slide;
             if (champName.length != 0) {
-                (<HTMLInputElement>document.getElementById(slide)).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+champName.name+"_0.jpg";
+                $(idForImage).attr("src", "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+champName.key+"_0.jpg");
+                //(<HTMLInputElement>document.getElementById(slide)).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+champName.key+"_0.jpg";
+                (<HTMLInputElement>document.getElementById(slide)).alt = "Couldn't find " + champName.key + ". Please contact site to fix the link.";
+                console.log((<HTMLInputElement>document.getElementById(slide)).src);
+                console.log(slide);
             } else {
                 console.log("Error in getting champion's name.");
             }
@@ -154,6 +159,7 @@ function getChampName(id:number, slide:string){
             console.log(error.getAllResponseHeaders());
         });
 }
+
 /**
  * Format of how user LoL data is stored
  */
@@ -197,13 +203,18 @@ class league {
  */
 jQuery(document).ready(function($) {
     getFreeChamp();
+
 	$('.banner').unslider({
-        arrows:true,
         animateHeight:true,
-        nav:true
+        nav:true,
+        keys: true,
+        selectors: {
+            container: 'ul:first',
+            slides: 'li'
+        },
+        fluid: true
     });
 });
-
 /**
  * Facebook login 
  */
