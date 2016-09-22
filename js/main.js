@@ -201,18 +201,21 @@ var league = (function () {
 /**
  * Unslider
  */
-jQuery(document).ready(function ($) {
-    getFreeChamp();
+function bannerSlide() {
     $('.banner').unslider({
-        animateHeight: true,
+        animation: 'vertical',
+        autoplay: true,
+        infinite: true,
         nav: true,
         keys: true,
-        selectors: {
-            container: 'ul:first',
-            slides: 'li'
-        },
+        dots: true,
         fluid: true
     });
+    $('.banner').height('initial');
+}
+jQuery(document).ready(function ($) {
+    getFreeChamp();
+    bannerSlide();
 });
 /**
  * Facebook login

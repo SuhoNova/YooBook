@@ -197,23 +197,25 @@ class league {
         this.wins=_wins;
     }
 }
-
 /**
  * Unslider
  */
-jQuery(document).ready(function($) {
-    getFreeChamp();
 
-	$('.banner').unslider({
-        animateHeight:true,
+function bannerSlide(){
+    $('.banner').unslider({
+        animation: 'vertical', 
+        autoplay: true, 
+        infinite: true,
         nav:true,
         keys: true,
-        selectors: {
-            container: 'ul:first',
-            slides: 'li'
-        },
+        dots:true,
         fluid: true
     });
+    $('.banner').height('initial');
+}
+jQuery(document).ready(function($) {
+    getFreeChamp();
+    bannerSlide();
 });
 /**
  * Facebook login 
