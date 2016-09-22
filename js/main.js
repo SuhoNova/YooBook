@@ -203,7 +203,6 @@ var league = (function () {
  */
 function bannerSlide() {
     $('.banner').unslider({
-        animation: 'vertical',
         autoplay: true,
         infinite: true,
         nav: true,

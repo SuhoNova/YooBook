@@ -200,10 +200,8 @@ class league {
 /**
  * Unslider
  */
-
 function bannerSlide(){
     $('.banner').unslider({
-        animation: 'vertical', 
         autoplay: true, 
         infinite: true,
         nav:true,
