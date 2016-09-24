@@ -145,11 +145,8 @@ function getChampName(id:number, slide:string){
         .done(function (champName) {
             var idForImage="#"+slide;
             if (champName.length != 0) {
-                $(idForImage).attr("src", "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+champName.key+"_0.jpg");
-                //(<HTMLInputElement>document.getElementById(slide)).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+champName.key+"_0.jpg";
+                (<HTMLInputElement>document.getElementById(slide)).src = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+champName.key+"_0.jpg";
                 (<HTMLInputElement>document.getElementById(slide)).alt = "Couldn't find " + champName.key + ". Please contact site to fix the link.";
-                console.log((<HTMLInputElement>document.getElementById(slide)).src);
-                console.log(slide);
             } else {
                 console.log("Error in getting champion's name.");
             }

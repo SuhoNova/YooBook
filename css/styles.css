@@ -20,13 +20,6 @@ h1#app-name{
 .page-header{
   background-color:transparent;
 }
-.profileIcon{
-  overflow: hidden;
-  float:left;
-}
-.profile{
-  float:left;
-}
 h2#name,h2#userLevel,h2#rankLeague,h2#rankName,h2#LP{
   color:black;
 }
@@ -35,16 +28,8 @@ h2#champRotation{
     line-height: 52px;
     color: #fff;
 }
-#userProfile,#userDivision{
-  margin: auto;
-  border: 3px;
-  padding: 10px;
-}
 img[src='']{
     display: none;
-}
-.img-responsive{
-  width:100%;
 }
 .banner {
     position: relative;
@@ -52,8 +37,15 @@ img[src='']{
     overflow: auto;
     top: 50px;
     background-color: transparent;
+    text-align: center;
 }
 #slider {
+    width: 300%;
+    padding:0; 
+    margin:0;
+}
+.banner ul {
+    list-style: none;
     width: 300%;
     padding:0; 
     margin:0;
@@ -71,11 +63,11 @@ img[src='']{
 .banner .btn {
     display: inline-block;
     margin: 25px 0 0;
-    padding: 9px 22px 7px;
+    padding: 10px 20px 8px;
     clear: both;
     border-radius: 5px;
 }
-/*position of dots*/
+/*position of dots, css for banner inspired by Denzelq from http://stackoverflow.com/questions/17382355/unslider-not-working-on-website */
 .banner .dots {
     position: absolute;
     left: 0;
