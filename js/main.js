@@ -1,9 +1,9 @@
 ///<reference path="fbsdk.d.ts" />
 ///<reference path="sweetalert.d.ts" />
 // api-key for riot api
-var _api_key = "RGAPI-72059D01-A819-4032-965D-656FFF263D28";
+var _api_key = "API_KEY_RIOT";
 // api-ky for facebook
-var _fb_id = "323270821354701";
+var _fb_id = "API_KEY_FB";
 // username of user
 var _username;
 // region default is oce for now, may give option for other regions later on
